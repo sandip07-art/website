@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+
+{% block title %}Student Dashboard - Attendance Management System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="fas fa-user-graduate me-2"></i>Student Dashboard</h1>
+    <span class="badge bg-success fs-6">Welcome, {{ session.name }}</span>
+</div>
+
+<div class="row g-4">
+    <!-- QR Scanner -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-qrcode me-2"></i>Scan QR Code for Attendance
+                </h5>
+            </div>
+            <div class="card-body text-center">
+                <div id="scanner-container" class="mb-3">
+                    <video id="video" width="100%" height="300" style="display: none;"></video>
+                    <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
+                    <div id="scanner-placeholder" class="bg-light p-5 rounded">
+                        <i class="fas fa-camera fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">Click "Start Scanner" to begin</p>
+                    </div>
+                </div>
+                
+                <div class="btn-group" role="group">
+                    <button id="start-scanner" class="btn btn-primary" onclick="startScanner()">
+                        <i class="fas fa-play me-1"></i>Start Scanner
+                    </button>
+                    <button id="stop-scanner" class="btn btn-outline-secondary" onclick="stopScanner()" style="display: none;">
+                        <i class="fas fa-stop me-1"></i>Stop Scanner
+                    </button>
+                </div>
+                
+                <div id="scan-result" class="mt-3" style="display: none;">
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <span id="scan-message"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Student QR Code -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-id-card me-2"></i>Your QR Code
+                </h5>
+            </div>
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <img src="{{ student_qr }}" alt="Student QR Code" class="img-fluid" style="max-width: 200px;">
+                </div>
+                <p class="text-muted">Your personal QR code</p>
+                <div class="btn-group" role="group">
+                    <button class="btn btn-outline-primary btn-sm" onclick="downloadStudentQR()">
+                        <i class="fas fa-download me-1"></i>Download
+                    </button>
+                    <button class="btn btn-outline-success btn-sm" onclick="printStudentQR()">
+                        <i class="fas fa-print me-1"></i>Print
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Attendance History -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-history me-2"></i>Your Attendance History
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if attendance_records %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Session</th>
+                                    <th>Teacher</th>
+                                    <th>Date & Time</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for attendance, teacher in attendance_records %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ attendance.session_name }}</strong>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-circle bg-warning text-white me-2">
+                                                {{ teacher.name[0].upper() }}
+                                            </div>
+                                            <span>{{ teacher.name }}</span>
+                                        </div>
+                                    </td>
+                                    <td>{{ attendance.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td>
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check me-1"></i>Present
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No attendance records found</p>
+                        <p class="text-muted">Scan teacher QR codes to mark your attendance</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let video, canvas, context;
+let scanning = false;
+
+function startScanner() {
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function(stream) {
+            video = document.getElementById('video');
+            canvas = document.getElementById('canvas');
+            context = canvas.getContext('2d');
+            
+            video.srcObject = stream;
+            video.play();
+            
+            document.getElementById('scanner-placeholder').style.display = 'none';
+            video.style.display = 'block';
+            document.getElementById('start-scanner').style.display = 'none';
+            document.getElementById('stop-scanner').style.display = 'inline-block';
+            
+            scanning = true;
+            scanFrame();
+        })
+        .catch(function(err) {
+            alert('Error accessing camera: ' + err.message);
+        });
+}
+
+function stopScanner() {
+    scanning = false;
+    if (video && video.srcObject) {
+        video.srcObject.getTracks().forEach(track => track.stop());
+    }
+    
+    video.style.display = 'none';
+    document.getElementById('scanner-placeholder').style.display = 'block';
+    document.getElementById('start-scanner').style.display = 'inline-block';
+    document.getElementById('stop-scanner').style.display = 'none';
+    document.getElementById('scan-result').style.display = 'none';
+}
+
+function scanFrame() {
+    if (!scanning) return;
+    
+    if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        // Convert canvas to base64 image
+        const imageData = canvas.toDataURL('image/png');
+        
+        // Send to server for QR code detection
+        fetch('/student/scan_qr', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ image_data: imageData })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('scan-message').textContent = data.message;
+                document.getElementById('scan-result').style.display = 'block';
+                stopScanner();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+    
+    requestAnimationFrame(scanFrame);
+}
+
+function downloadStudentQR() {
+    alert('Download student QR functionality will be implemented');
+}
+
+function printStudentQR() {
+    window.print();
+}
+</script>
+{% endblock %}

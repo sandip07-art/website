@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}Session Details - {{ session.session_name }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="fas fa-chalkboard me-2"></i>{{ session.session_name }}</h1>
+    <div>
+        {% if session.is_active and session.expires_at > moment() %}
+            <span class="badge bg-success fs-6">
+                <i class="fas fa-check me-1"></i>Active
+            </span>
+        {% else %}
+            <span class="badge bg-secondary fs-6">
+                <i class="fas fa-times me-1"></i>Expired
+            </span>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Session QR Code -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-qrcode me-2"></i>Session QR Code
+                </h5>
+            </div>
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <img src="{{ qr_code }}" alt="Session QR Code" class="img-fluid" style="max-width: 300px;">
+                </div>
+                <p class="text-muted">Students can scan this QR code to mark attendance</p>
+                <div class="btn-group" role="group">
+                    <button class="btn btn-outline-primary" onclick="downloadQR()">
+                        <i class="fas fa-download me-1"></i>Download
+                    </button>
+                    <button class="btn btn-outline-success" onclick="printQR()">
+                        <i class="fas fa-print me-1"></i>Print
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Session Information -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-info-circle me-2"></i>Session Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <strong>Session Name:</strong><br>
+                        <span class="text-muted">{{ session.session_name }}</span>
+                    </div>
+                    <div class="col-6">
+                        <strong>Created:</strong><br>
+                        <span class="text-muted">{{ session.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                    </div>
+                    <div class="col-6">
+                        <strong>Expires:</strong><br>
+                        <span class="text-muted">{{ session.expires_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                    </div>
+                    <div class="col-6">
+                        <strong>Token:</strong><br>
+                        <code class="text-muted">{{ session.qr_token[:8] }}...</code>
+                    </div>
+                    <div class="col-6">
+                        <strong>Attendance Count:</strong><br>
+                        <span class="text-muted">{{ attendance_records|length }} students</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Attendance Records -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-list me-2"></i>Attendance Records
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if attendance_records %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Timestamp</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for attendance, student in attendance_records %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-circle bg-success text-white me-3">
+                                                {{ student.name[0].upper() }}
+                                            </div>
+                                            <div>
+                                                <strong>{{ student.name }}</strong><br>
+                                                <small class="text-muted">{{ student.username }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>{{ attendance.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                    <td>
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check me-1"></i>Present
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No attendance records yet</p>
+                        <p class="text-muted">Students can scan the QR code above to mark attendance</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Actions -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between">
+            <a href="{{ url_for('teacher_dashboard') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+            </a>
+            <div>
+                <button class="btn btn-outline-success me-2" onclick="exportAttendance()">
+                    <i class="fas fa-download me-1"></i>Export Attendance
+                </button>
+                <button class="btn btn-outline-danger" onclick="endSession()">
+                    <i class="fas fa-stop me-1"></i>End Session
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function downloadQR() {
+    // Implement QR code download
+    alert('Download QR code functionality will be implemented');
+}
+
+function printQR() {
+    // Implement QR code printing
+    window.print();
+}
+
+function exportAttendance() {
+    // Implement attendance export
+    alert('Export attendance functionality will be implemented');
+}
+
+function endSession() {
+    if (confirm('Are you sure you want to end this session?')) {
+        // Implement session ending
+        alert('End session functionality will be implemented');
+    }
+}
+</script>
+{% endblock %}

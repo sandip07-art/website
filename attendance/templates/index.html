@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome - Attendance Management System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="hero-section text-center py-5 mb-5">
+            <h1 class="display-4 fw-bold text-primary mb-3">
+                <i class="fas fa-graduation-cap me-3"></i>
+                Attendance Management System
+            </h1>
+            <p class="lead text-muted mb-4">
+                Modern, efficient, and user-friendly attendance tracking for educational institutions
+            </p>
+            <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-sign-in-alt me-2"></i>Get Started
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Admin Portal -->
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <div class="icon-circle bg-danger text-white mx-auto mb-3">
+                    <i class="fas fa-shield-alt fa-2x"></i>
+                </div>
+                <h4 class="card-title">Admin Portal</h4>
+                <p class="card-text text-muted">
+                    Complete system administration, user management, and comprehensive analytics.
+                </p>
+                <ul class="list-unstyled text-start">
+                    <li><i class="fas fa-check text-success me-2"></i>User Management</li>
+                    <li><i class="fas fa-check text-success me-2"></i>System Analytics</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Reports & Export</li>
+                    <li><i class="fas fa-check text-success me-2"></i>System Configuration</li>
+                </ul>
+            </div>
+            <div class="card-footer bg-transparent">
+                <a href="{{ url_for('login') }}" class="btn btn-outline-danger w-100">
+                    <i class="fas fa-sign-in-alt me-2"></i>Admin Login
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Teacher Portal -->
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <div class="icon-circle bg-warning text-white mx-auto mb-3">
+                    <i class="fas fa-chalkboard-teacher fa-2x"></i>
+                </div>
+                <h4 class="card-title">Teacher Portal</h4>
+                <p class="card-text text-muted">
+                    Create sessions, generate QR codes, and monitor student attendance in real-time.
+                </p>
+                <ul class="list-unstyled text-start">
+                    <li><i class="fas fa-check text-success me-2"></i>Session Management</li>
+                    <li><i class="fas fa-check text-success me-2"></i>QR Code Generation</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Real-time Monitoring</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Attendance Reports</li>
+                </ul>
+            </div>
+            <div class="card-footer bg-transparent">
+                <a href="{{ url_for('login') }}" class="btn btn-outline-warning w-100">
+                    <i class="fas fa-sign-in-alt me-2"></i>Teacher Login
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Portal -->
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <div class="icon-circle bg-success text-white mx-auto mb-3">
+                    <i class="fas fa-user-graduate fa-2x"></i>
+                </div>
+                <h4 class="card-title">Student Portal</h4>
+                <p class="card-text text-muted">
+                    Mark attendance using QR codes and view your attendance history.
+                </p>
+                <ul class="list-unstyled text-start">
+                    <li><i class="fas fa-check text-success me-2"></i>QR Code Scanning</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Attendance History</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Personal QR Code</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Mobile Friendly</li>
+                </ul>
+            </div>
+            <div class="card-footer bg-transparent">
+                <a href="{{ url_for('login') }}" class="btn btn-outline-success w-100">
+                    <i class="fas fa-sign-in-alt me-2"></i>Student Login
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h3 class="card-title text-center mb-4">
+                    <i class="fas fa-star text-warning me-2"></i>
+                    Key Features
+                </h3>
+                <div class="row g-3">
+                    <div class="col-md-3 text-center">
+                        <i class="fas fa-qrcode fa-3x text-primary mb-2"></i>
+                        <h5>QR Code Technology</h5>
+                        <p class="text-muted small">Fast and secure attendance marking</p>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <i class="fas fa-mobile-alt fa-3x text-primary mb-2"></i>
+                        <h5>Mobile Responsive</h5>
+                        <p class="text-muted small">Works on all devices</p>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <i class="fas fa-chart-line fa-3x text-primary mb-2"></i>
+                        <h5>Real-time Analytics</h5>
+                        <p class="text-muted small">Live attendance tracking</p>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <i class="fas fa-shield-alt fa-3x text-primary mb-2"></i>
+                        <h5>Secure & Reliable</h5>
+                        <p class="text-muted small">Enterprise-grade security</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

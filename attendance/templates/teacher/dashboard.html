@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}Teacher Dashboard - Attendance Management System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="fas fa-chalkboard-teacher me-2"></i>Teacher Dashboard</h1>
+    <span class="badge bg-warning fs-6">Welcome, {{ session.name }}</span>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row g-4 mb-5">
+    <div class="col-md-6">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">{{ total_attendance }}</h4>
+                        <p class="card-text">Total Attendance Records</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-check-circle fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">{{ today_attendance }}</h4>
+                        <p class="card-text">Today's Attendance</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-calendar-day fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-bolt me-2"></i>Quick Actions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <a href="{{ url_for('teacher_create_session') }}" class="btn btn-primary w-100">
+                            <i class="fas fa-plus me-2"></i>Create New Session
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-outline-success w-100" onclick="viewReports()">
+                            <i class="fas fa-chart-bar me-2"></i>View Reports
+                        </button>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-outline-info w-100" onclick="exportAttendance()">
+                            <i class="fas fa-download me-2"></i>Export Attendance
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Active Sessions -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-list me-2"></i>Your Sessions
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if sessions %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Session Name</th>
+                                    <th>Created</th>
+                                    <th>Expires</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for session in sessions %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ session.session_name }}</strong>
+                                    </td>
+                                    <td>{{ session.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td>{{ session.expires_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td>
+                                        {% if session.is_active and session.expires_at > moment() %}
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-check me-1"></i>Active
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">
+                                                <i class="fas fa-times me-1"></i>Expired
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ url_for('teacher_session_details', session_id=session.id) }}" class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <button class="btn btn-outline-success btn-sm" onclick="toggleSession({{ session.id }})">
+                                                <i class="fas fa-power-off"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No sessions created yet</p>
+                        <a href="{{ url_for('teacher_create_session') }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Create Your First Session
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function viewReports() {
+    alert('Reports functionality will be implemented');
+}
+
+function exportAttendance() {
+    alert('Export functionality will be implemented');
+}
+
+function toggleSession(sessionId) {
+    if (confirm('Are you sure you want to toggle this session?')) {
+        // Implement session toggle
+        alert('Session toggle functionality will be implemented');
+    }
+}
+</script>
+{% endblock %}

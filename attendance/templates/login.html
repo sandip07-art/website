@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Attendance Management System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <i class="fas fa-graduation-cap fa-3x text-primary mb-3"></i>
+                    <h2 class="card-title">Welcome Back</h2>
+                    <p class="text-muted">Sign in to your account</p>
+                </div>
+
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="user_type" class="form-label">Login As</label>
+                        <select class="form-select" id="user_type" name="user_type" required>
+                            <option value="">Select User Type</option>
+                            <option value="admin">Administrator</option>
+                            <option value="teacher">Teacher</option>
+                            <option value="student">Student</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-user"></i>
+                            </span>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="password" class="form-label">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 mb-3">
+                        <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                    </button>
+                </form>
+
+                <div class="text-center">
+                    <small class="text-muted">
+                        Default Admin: username: <strong>admin</strong>, password: <strong>admin123</strong>
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Access Cards -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card bg-light">
+                    <div class="card-body text-center">
+                        <h6 class="card-title">Quick Access</h6>
+                        <div class="row g-2">
+                            <div class="col-4">
+                                <button class="btn btn-outline-danger btn-sm w-100" onclick="setUserType('admin')">
+                                    <i class="fas fa-shield-alt"></i><br>Admin
+                                </button>
+                            </div>
+                            <div class="col-4">
+                                <button class="btn btn-outline-warning btn-sm w-100" onclick="setUserType('teacher')">
+                                    <i class="fas fa-chalkboard-teacher"></i><br>Teacher
+                                </button>
+                            </div>
+                            <div class="col-4">
+                                <button class="btn btn-outline-success btn-sm w-100" onclick="setUserType('student')">
+                                    <i class="fas fa-user-graduate"></i><br>Student
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function setUserType(type) {
+    document.getElementById('user_type').value = type;
+    document.getElementById('username').focus();
+}
+</script>
+{% endblock %}
